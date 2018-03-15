@@ -1,9 +1,60 @@
-let pi;
-
-function preload() {
-  pi = loadStrings('pi.txt');
-}
+let pi = "3.141592653589793238462643383279502884197169399375105820974944592307816406286 208998628034825342117067982148086513282306647093844609550582231725359408128481 117450284102701938521105559644622948954930381964428810975665933446128475648233 786783165271201909145648566923460348610454326648213393607260249141273724587006 606315588174881520920962829254091715364367892590360011330530548820466521384146 951941511609433057270365759591953092186117381932611793105118548074462379962749 567351885752724891227938183011949129833673362440656643086021394946395224737190 702179860943702770539217176293176752384674818467669405132000568127145263560827 785771342757789609173637178721468440901224953430146549585371050792279689258923 542019956112129021960864034418159813629774771309960518707211349999998372978049 951059731732816096318595024459455346908302642522308253344685035261931188171010 003137838752886587533208381420617177669147303598253490428755468731159562863882 353787593751957781857780532171226806613001927876611195909216420198938095257201 ";
+let piarr = [];
 
 function setup() {
-  console.log(pi);
+  for(har of pi) {
+    if(har != "." && har != " ") {
+      piarr.push(parseInt(har));
+    }
+  }
+
+  createCanvas(windowWidth, 400);  
+  textAlign(CENTER);
+  config.xOff = -width;
+}
+
+
+const config = {
+  barWidth: 50,
+  xOff: 0,
+  speed: 2
+};
+
+function draw() {
+  setGradient(0, 0, width, height, color(207, 84, 20), color(0, 7, 44), 1)
+  config.bars = ceil(width / config.barWidth);
+  for(let i = 0; i < piarr.length; i++) {
+    let x = i * config.barWidth - config.xOff;
+    if(x + config.barWidth < 0 && x > width) {
+      continue;
+    } else {
+      fill(255);
+      let h = map(piarr[i], 0, 9, 0, height - 50);
+      rect(x, height - h, config.barWidth, h);
+      text(piarr[i], x + config.barWidth / 2, height - h);
+    }
+  }
+  config.xOff += config.speed;
+}
+
+function setGradient(x, y, w, h, c1, c2, axis) {
+
+  noFill();
+
+  if (axis == 1) {  // Top to bottom gradient
+    for (var i = y; i <= y+h; i++) {
+      var inter = map(i, y, y+h, 0, 1);
+      var c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(x, i, x+w, i);
+    }
+  }  
+  else if (axis == 2) {  // Left to right gradient
+    for (var i = x; i <= x+w; i++) {
+      var inter = map(i, x, x+w, 0, 1);
+      var c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(i, y, i, y+h);
+    }
+  }
 }
